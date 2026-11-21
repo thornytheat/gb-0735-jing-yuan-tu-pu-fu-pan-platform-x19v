@@ -1,0 +1,57 @@
+{
+  "sample": "mixed",
+  "label": "复判混合样例",
+  "lot": "FT26-1120",
+  "sources": [
+    {
+      "name": "probe-a.csv",
+      "records": 554,
+      "notch": "S",
+      "origin_x": 240,
+      "origin_y": 480
+    },
+    {
+      "name": "probe-b.csv",
+      "records": 12,
+      "notch": "E",
+      "origin_x": 100,
+      "origin_y": 200,
+      "y_down": true,
+      "mirror": true
+    }
+  ],
+  "wafers": [
+    {
+      "wafer": "W-07",
+      "radius": 12,
+      "edge": 2,
+      "notch_depth": 3,
+      "notch_half_width": 1
+    },
+    {
+      "wafer": "W-08",
+      "radius": 10,
+      "edge": 1,
+      "notch_depth": 2,
+      "notch_half_width": 1
+    }
+  ],
+  "ledger": [
+    {
+      "wafer": "W-07",
+      "valid": 313,
+      "passed": 275,
+      "failed": 23,
+      "pending": 13,
+      "conflict": 2
+    },
+    {
+      "wafer": "W-08",
+      "valid": 249,
+      "passed": 228,
+      "failed": 11,
+      "pending": 10,
+      "conflict": 0
+    }
+  ]
+}

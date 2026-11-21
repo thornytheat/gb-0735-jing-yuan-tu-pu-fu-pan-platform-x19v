@@ -1,0 +1,23 @@
+<div class="grid map-layout">
+  <section class="panel map-panel">
+    <div class="panel__head">
+      <div><h2>晶圆阵列</h2><span class="panel__meta" id="map-size">—</span></div>
+      <label class="zoom-label">网格 <select id="zoom"><option value="18">18 px</option><option value="24">24 px</option><option value="30">30 px</option></select></label>
+    </div>
+    <div id="legend" class="legend" aria-label="按状态高亮"></div>
+    <div class="map-viewport" id="map-viewport" tabindex="0" aria-label="晶圆阵列滚动区">
+      <div id="map-grid"></div>
+    </div>
+    <div class="map-caption"><span>列 X →　行 Y ↑</span><span>▼ 南缺口</span><span id="geometry-rules">—</span></div>
+  </section>
+  <div class="stack">
+    <section class="panel detail-panel">
+      <div class="panel__head"><div><h2>芯粒证据</h2><span class="panel__meta" id="grid-selected">—</span></div></div>
+      <div id="cell-detail" class="panel__body detail-scroll" aria-live="polite"></div>
+    </section>
+    <section class="panel">
+      <div class="panel__head"><h2>阵列分类</h2></div>
+      <div id="mask-counts" class="panel__body"></div>
+    </section>
+  </div>
+</div>

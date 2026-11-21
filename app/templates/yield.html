@@ -1,0 +1,15 @@
+<div class="grid audit-layout">
+  <section class="panel">
+    <div class="panel__head"><div><h2>阵列与交接台账</h2><span class="panel__meta" id="audit-total">—</span></div></div>
+    <div class="table-scroll" id="audit-wafers"></div>
+    <div class="panel__body" id="audit-differences"></div>
+  </section>
+  <section class="panel">
+    <div class="panel__head"><h2>图档行数守恒</h2></div>
+    <div class="panel__body" id="audit-rows"></div>
+  </section>
+</div>
+<section class="panel below">
+  <div class="panel__head"><h2>原因码隔离区</h2><label>原因码 <select id="reason-filter" aria-label="筛选原因码"></select></label></div>
+  <div class="table-scroll tall" id="audit-issues"></div>
+</section>

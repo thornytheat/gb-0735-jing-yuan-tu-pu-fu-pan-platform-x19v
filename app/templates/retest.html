@@ -1,0 +1,17 @@
+<div class="grid split">
+  <section class="panel">
+    <div class="panel__head">
+      <div><h2>芯粒裁决</h2><span class="panel__meta" id="retest-total">—</span></div>
+      <label>结果 <select id="retest-filter" aria-label="筛选裁决"><option value="CONFLICT">冲突</option><option value="FAIL">失败</option><option value="PASS">通过</option><option value="PENDING">待测</option><option value="all">全部</option></select></label>
+    </div>
+    <div class="table-scroll tall" id="retest-rows"></div>
+  </section>
+  <section class="panel">
+    <div class="panel__head"><h2>测次链与原行</h2></div>
+    <div class="panel__body detail-scroll" id="retest-detail" aria-live="polite"></div>
+  </section>
+</div>
+<section class="panel below">
+  <div class="panel__head"><h2>复测隔离与重复回传</h2></div>
+  <div class="table-scroll" id="retest-issues"></div>
+</section>

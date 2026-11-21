@@ -1,0 +1,31 @@
+{
+  "sample": "baseline",
+  "label": "单档基准样例",
+  "lot": "FT26-CAL",
+  "sources": [
+    {
+      "name": "baseline-probe.csv",
+      "records": 47,
+      "notch": "S"
+    }
+  ],
+  "wafers": [
+    {
+      "wafer": "W-03",
+      "radius": 5,
+      "edge": 1,
+      "notch_depth": 2,
+      "notch_half_width": 0
+    }
+  ],
+  "ledger": [
+    {
+      "wafer": "W-03",
+      "valid": 47,
+      "passed": 47,
+      "failed": 0,
+      "pending": 0,
+      "conflict": 0
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "sample": "truncated",
+  "label": "截断探针图",
+  "lot": "FT26-CAL",
+  "sources": [
+    {
+      "name": "baseline-probe.csv",
+      "records": 47,
+      "notch": "S"
+    },
+    {
+      "name": "cut-probe.csv",
+      "records": 47,
+      "notch": "S"
+    }
+  ],
+  "wafers": [
+    {
+      "wafer": "W-03",
+      "radius": 5,
+      "edge": 1,
+      "notch_depth": 2,
+      "notch_half_width": 0
+    }
+  ],
+  "ledger": []
+}

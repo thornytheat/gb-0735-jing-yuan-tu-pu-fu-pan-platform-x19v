@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ pages[stage][0] }} · 晶圆图谱复判台</title>
+  <link rel="stylesheet" href="/static/theme.css">
+  <link rel="stylesheet" href="/static/layout.css">
+  <link rel="stylesheet" href="/static/components.css">
+  <script type="module" src="/static/app.js"></script>
+</head>
+<body data-stage="{{ stage }}">
+  <aside class="rail">
+    <a class="brand" href="/" data-nav>
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>晶圆图谱复判台<small>WAFER REVIEW</small></span>
+    </a>
+    <nav aria-label="复判流程">
+      <p class="rail-label">复判流程</p>
+      {% for key in nav %}
+      <a class="nav-link" href="{{ pages[key][1] }}" data-nav {% if key == stage %}aria-current="page"{% endif %}>
+        <span class="nav-mark" aria-hidden="true">{{ pages[key][2] }}</span>{{ pages[key][0] }}
+      </a>
+      {% endfor %}
+    </nav>
+    <div class="rail-foot"><span>当前图批</span><strong id="rail-run">—</strong></div>
+  </aside>
+  <div class="work">
+    <header class="topbar">
+      <h1>{{ pages[stage][0] }}</h1>
+      <div class="batch-controls">
+        <label>样例 <select id="sample" disabled aria-label="样例"></select></label>
+        <button id="start" class="btn primary" type="button" disabled>运行样例</button>
+        <button id="rerun" class="btn" type="button" disabled>重跑</button>
+        <a id="export" class="btn link-btn" hidden>导出证据<span aria-hidden="true"> ↓</span></a>
+      </div>
+    </header>
+    <main class="content">
+      <section class="scope" aria-label="当前批次">
+        <div class="scope-lot"><span>图批</span><strong id="lot">—</strong><span class="status" id="batch-status">待载入</span></div>
+        <label class="wafer-control">晶圆 <select id="wafer" aria-label="晶圆" disabled></select></label>
+        <div class="scope-meta"><span id="version">—</span><time id="created">—</time></div>
+      </section>
+      <dl class="kpis" id="metrics">
+        <div class="kpi"><dt>有效芯粒</dt><dd id="kpi-valid">—</dd></div>
+        <div class="kpi"><dt>通过</dt><dd id="kpi-passed">—</dd></div>
+        <div class="kpi"><dt>失败</dt><dd id="kpi-failed">—</dd></div>
+        <div class="kpi"><dt>待测</dt><dd id="kpi-pending">—</dd></div>
+        <div class="kpi"><dt>冲突</dt><dd id="kpi-conflict">—</dd></div>
+        <div class="kpi yield-kpi"><dt>复判良率</dt><dd id="kpi-yield_pct">—</dd></div>
+      </dl>
+      <div id="feedback" class="feedback" role="status" hidden></div>
+      <div id="view" aria-busy="true" hidden>{% include stage ~ '.html' %}</div>
+    </main>
+    <footer class="statusbar">
+      <span><i class="status-light" aria-hidden="true"></i> <span id="connection">正在载入</span></span>
+      <span id="scope-text">南缺口 · X→ / Y↑</span>
+      <a href="/docs">接口文档</a>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<div class="grid split">
+  <section class="panel">
+    <div class="panel__head"><h2>机台坐标契约</h2></div>
+    <div class="table-scroll" id="coordinate-sources"></div>
+  </section>
+  <section class="panel">
+    <div class="panel__head"><h2>坐标试算</h2></div>
+    <div class="panel__body">
+      <form id="probe-form" class="probe-form">
+        <label>图档<select name="source" required></select></label>
+        <label>原 X<input name="x" value="97" type="number" required></label>
+        <label>原 Y<input name="y" value="202" type="number" required></label>
+        <button class="btn primary" type="submit">换算</button>
+      </form>
+      <div id="probe-output" aria-live="polite"></div>
+    </div>
+  </section>
+</div>
+<section class="panel below">
+  <div class="panel__head"><div><h2>对表记录</h2><span class="panel__meta" id="aligned-total">—</span></div><label>图档 <select id="coordinate-filter" aria-label="筛选图档"></select></label></div>
+  <div class="table-scroll tall" id="coordinate-rows"></div>
+</section>
+<section class="panel below">
+  <div class="panel__head"><h2>坐标隔离</h2></div>
+  <div class="table-scroll" id="coordinate-issues"></div>
+</section>
