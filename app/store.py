@@ -27,6 +27,13 @@ class RunStore:
                     pinned TEXT NOT NULL
                 )
             """)
+            connection.execute("""
+                CREATE TABLE IF NOT EXISTS release_corrections (
+                    correction_id TEXT PRIMARY KEY,
+                    run_id TEXT NOT NULL,
+                    document TEXT NOT NULL
+                )
+            """)
 
     def put(self, manifest, snapshot, pinned):
         with self.connect() as connection:
@@ -50,4 +57,30 @@ class RunStore:
     def list(self):
         with self.connect() as connection:
             rows = connection.execute("SELECT manifest FROM wafer_runs ORDER BY rowid DESC").fetchall()
+        return [json.loads(row[0]) for row in rows]
+
+    def put_correction(self, document):
+        with self.connect() as connection:
+            cursor = connection.execute(
+                "INSERT INTO release_corrections VALUES (?, ?, ?) ON CONFLICT(correction_id) DO NOTHING",
+                (document["correction_id"], document["run_id"], canonical(document)),
+            )
+            created = cursor.rowcount == 1
+            row = connection.execute("SELECT document FROM release_corrections WHERE correction_id = ?",
+                                     (document["correction_id"],)).fetchone()
+        return json.loads(row[0]), created
+
+    def get_correction(self, run_id, correction_id):
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT document FROM release_corrections WHERE correction_id = ? AND run_id = ?",
+                (correction_id, run_id)).fetchone()
+        if row is None:
+            raise ReviewError("CORRECTION_NOT_FOUND", "放行更正版本未找到", 404)
+        return json.loads(row[0])
+
+    def list_corrections(self, run_id):
+        with self.connect() as connection:
+            rows = connection.execute("SELECT document FROM release_corrections WHERE run_id = ? ORDER BY rowid",
+                                      (run_id,)).fetchall()
         return [json.loads(row[0]) for row in rows]

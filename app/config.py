@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RULE_VERSION = "wafer-1.0.0"
+CORRECTION_VERSION = "release-1.0.0"
 DEFAULT_SAMPLE = "mixed"
 MAX_INPUT_BYTES = 2 * 1024 * 1024
 

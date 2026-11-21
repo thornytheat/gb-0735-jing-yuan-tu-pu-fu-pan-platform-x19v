@@ -14,6 +14,7 @@
 | M5 缺陷簇 | 检查四邻域成员、分档和原行 | `GET /api/runs/{run_id}/clusters/{wafer}` | `app/modules/clusters/components.py` | `tests/test_clusters.py` |
 | M6 良率勾稽 | 核对坐标集合、实收和交接差值 | `GET /api/runs/{run_id}/yield` | `app/modules/yield_audit/compare.py` | `tests/test_yield.py` |
 | M7 图批复盘 | 原子运行、按归档重算、核验后导出 | `POST /api/runs` `POST /api/runs/{run_id}/rerun` `GET /api/runs/{run_id}/export` | `app/modules/runs/pipeline.py` `app/modules/runs/service.py` `app/modules/runs/bundle.py` `app/store.py` | `tests/test_runs.py` |
+| M8 放行更正 | 登记迟到复测、预览处置与差额变化、幂等发布可追溯版本 | `POST /api/runs/{run_id}/corrections/preview` `POST /api/runs/{run_id}/corrections` `GET /api/runs/{run_id}/corrections[/{correction_id}]` | `app/modules/corrections/correct.py` `app/modules/corrections/schema.py` `app/modules/corrections/handler.py` `app/store.py` | `tests/test_corrections.py` |
 
 ## 陷阱登记
 
@@ -31,6 +32,9 @@
 | TRAP-17 | `probe-b.csv` 中文栏名且第二段换序 | 错对 X/Y 或分档 | 映射别名并按段绑定字段 | `app/modules/intake/reader.py` | `tests/test_intake.py::test_segment_headers_advance_reordered_contract` |
 | TRAP-18 | 空文件、空行与仅档头的构造输入 | 产生零行成功批次 | 三态分别返回错误码 | `app/modules/intake/reader.py` | `tests/test_intake.py::test_empty_header_and_blank_are_separate` |
 | TRAP-19 | `(0,1)` 多测次，2 号在 10 号之后到达 | 误选最后行或字典序最大值 | 取最大有效测次号 | `app/modules/retest/arbitrate.py` | `tests/test_retest.py::test_numeric_attempt_precedence_ignores_arrival_order` |
+| TRAP-20 | 同一批放行更正被重试或乱序重复提交 | 生成第二版，客户看到两份结论 | 记录规范化后取内容摘要作版本键，冲突时复用原版 | `app/modules/corrections/correct.py` `app/store.py` | `tests/test_corrections.py::test_publish_retry_reuses_single_version_with_original_timestamp` `tests/test_corrections.py::test_same_correction_content_is_one_version_regardless_of_order_or_duplicates` |
+| TRAP-21 | 更正发布中途存储失败 | 半批次覆盖旧版图批 | 校验先于写入，单表单事务提交，失败保留旧版本与基批 | `app/modules/runs/service.py` `app/store.py` | `tests/test_corrections.py::test_publish_failure_keeps_previous_versions_and_base_run` |
+| TRAP-22 | 更正直接改写原快照或测次链 | 原交接单无法追溯恢复 | 更正独立成表只追加，发布前核验基批摘要，原链随文档留存 | `app/modules/corrections/correct.py` `app/modules/runs/service.py` | `tests/test_corrections.py::test_correction_preserves_base_snapshot_and_original_chain` `tests/test_corrections.py::test_correction_on_tampered_or_outdated_archive_rejected` |
 
 补充反例包括经过 X 反射后重新推导缺口转角、圆形边缘等式包含、对角缺陷分簇、恢复点断开原失效带、平移阵列漏位以及同键并发只提交一次。
 
@@ -39,3 +43,4 @@
 - 有效位集合与裁决键集合相等，有效数守恒到四类最终状态。
 - 实收行按五类互斥归档，声明的逻辑数据量可独立回推。
 - 对外提供一份证据包，同一规则版本下输入相同时运行号与结果摘要一致。
+- 放行更正只增不改：同一批迟到记录对应唯一更正版本，原图批快照与测次链在任意更正序列后保持逐字节一致。

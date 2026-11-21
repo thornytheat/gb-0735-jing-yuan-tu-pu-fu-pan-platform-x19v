@@ -10,6 +10,7 @@ from app.config import DEFAULT_SAMPLE, ROOT, database_path
 from app.errors import ReviewError
 from app.modules.clusters import handler as clusters
 from app.modules.coordinates import handler as coordinates
+from app.modules.corrections import handler as corrections
 from app.modules.intake import handler as intake
 from app.modules.mask import handler as mask
 from app.modules.retest import handler as retest
@@ -31,7 +32,7 @@ def create_app(db=None, seed=True):
     instance = FastAPI(title="晶圆图谱复判台", lifespan=lifespan)
     instance.state.runs = RunService(RunStore(db or database_path()))
     instance.mount("/static", StaticFiles(directory=ROOT / "app/static"), name="static")
-    for module in (intake, coordinates, mask, retest, clusters, yield_audit, runs):
+    for module in (intake, coordinates, mask, retest, clusters, yield_audit, corrections, runs):
         instance.include_router(module.router)
     instance.include_router(web)
     instance.add_exception_handler(ReviewError, review_error)

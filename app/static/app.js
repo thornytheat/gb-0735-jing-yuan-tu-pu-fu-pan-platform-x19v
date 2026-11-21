@@ -1,4 +1,5 @@
 import {mapView} from './grid.js';
+import {setupCorrections} from './corrections.js';
 import {labels, number, options, q, text, views} from './views.js';
 
 const stage = document.body.dataset.stage;
@@ -70,6 +71,7 @@ async function display(run, selected, manifests, params = new URLSearchParams())
   const audit = await request(`${base}/yield`);
   const context = {api: request, base, wafer, run, signal: controller.signal, audit, manifests, params};
   await (stage === 'mask' ? mapView(context) : views[stage](context));
+  if (stage === 'yield') setupCorrections(context);
   state.run = run;
   state.wafer = wafer;
   options(waferSelect, run.wafers.map((id) => [id, id]), wafer);

@@ -10,6 +10,31 @@
   </section>
 </div>
 <section class="panel below">
+  <div class="panel__head">
+    <div><h2>放行更正</h2><span class="panel__meta" id="correction-meta">迟到复测登记 · 原交接单不改写</span></div>
+  </div>
+  <div class="panel__body">
+    <form id="correction-form" class="correction-form">
+      <label>晶圆 <select name="wafer" required aria-label="更正晶圆"></select></label>
+      <label>X <input name="x" type="number" min="-30" max="30" required></label>
+      <label>Y <input name="y" type="number" min="-30" max="30" required></label>
+      <label>测次 <input name="attempt" type="number" min="1" max="999" required></label>
+      <label>判定 <select name="result" aria-label="判定"><option value="PASS">通过</option><option value="FAIL">失败</option></select></label>
+      <label>分档 <input name="bin" type="number" min="1" max="999" required></label>
+      <label class="note-field">备注 <input name="note" type="text" maxlength="200" placeholder="复测单号"></label>
+      <button type="submit" class="btn">加入更正批</button>
+    </form>
+    <div class="table-scroll" id="correction-staged"></div>
+    <div class="correction-actions">
+      <button id="correction-preview" class="btn" type="button" disabled>预览影响</button>
+      <button id="correction-publish" class="btn primary" type="button" disabled>发布更正</button>
+      <span class="correction-hint">发布只追加新版本，原交接单、台账与测次链保持可查</span>
+    </div>
+  </div>
+  <div class="panel__body correction-result" id="correction-result" hidden></div>
+  <div class="table-scroll" id="correction-versions"></div>
+</section>
+<section class="panel below">
   <div class="panel__head"><h2>原因码隔离区</h2><label>原因码 <select id="reason-filter" aria-label="筛选原因码"></select></label></div>
   <div class="table-scroll tall" id="audit-issues"></div>
 </section>

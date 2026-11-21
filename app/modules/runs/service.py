@@ -4,6 +4,7 @@ from time import perf_counter
 from app.config import RULE_VERSION
 from app.errors import ReviewError
 from app.manifest import canonical, digest, fingerprint, pin
+from app.modules.corrections.correct import build_correction
 from app.modules.intake.catalog import load_sample, restore_package
 from app.modules.runs.pipeline import calculate
 
@@ -42,3 +43,21 @@ class RunService:
         if actual != manifest["result_sha256"]:
             raise ReviewError("REPLAY_DIVERGED", "复算摘要不符", 409)
         return {"manifest": manifest, "reused": True, "verified": True}
+
+    def verified_archive(self, run_id):
+        manifest, snapshot, _ = self.store.get(run_id)
+        if manifest["rule_version"] != RULE_VERSION:
+            raise ReviewError("RULE_VERSION_CHANGED", "旧规则版本无法更正", 409)
+        if digest(canonical(snapshot).encode()) != manifest["result_sha256"]:
+            raise ReviewError("SNAPSHOT_DAMAGED", "归档摘要不符", 409)
+        return manifest, snapshot
+
+    def preview_correction(self, run_id, records):
+        manifest, snapshot = self.verified_archive(run_id)
+        return build_correction(manifest, snapshot, records)
+
+    def publish_correction(self, run_id, records):
+        manifest, snapshot = self.verified_archive(run_id)
+        document = build_correction(manifest, snapshot, records)
+        recorded, created = self.store.put_correction(document)
+        return {"document": recorded, "reused": not created}

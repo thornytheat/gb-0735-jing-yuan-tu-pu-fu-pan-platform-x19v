@@ -36,6 +36,14 @@
 - `run_id` 由规则版本、契约 SHA-256 和每个来源的字节数及 SHA-256 生成。归档保留规则版本、UTC 生成时间、计算耗时、输入摘要与结果摘要。
 - 运行归档一次提交清单、结果和原始输入，批次键唯一。证据 JSON 附带原档的 Base64 编码、契约、隔离行、归并和对账结果。摘要采用 UTF-8 JSON，键排序，分隔符为逗号和冒号且无多余空格，保留非 ASCII 字符。
 
+## 放行更正
+
+迟到复测以标准坐标登记，字段与 CSV 测值同规则：测次 1–999，判定接受同样的别名并归一化为 `PASS/FAIL`，分档须与判定一致（通过为 1，失败为 2–999）。目标必须是该片有效芯粒，测次须新于测次链中已有的最大测次；同批记录按晶圆、坐标、测次排序，完全相同的记录只计一次，同芯粒同测次的不同取值拒绝整批。
+
+- 更正只追加新版本：原图批的快照、台账对账与测次链不被改写，发布前会核验基批规则版本与结果摘要，归档被篡改或规则过旧时拒绝更正。
+- `correction_id` 由更正规则版本、运行号和规范化后的迟到记录生成，内容相同即同版。重复发布返回原版本（HTTP 200 且 `reused` 为真），首次发布为 HTTP 201。发布写入单表单事务，失败时旧版本与基批保持不变。
+- 更正文档逐枚记录变更芯粒的前后裁决、放行处置（`PASS` 为可放行 `RELEASABLE`，失败、待测、冲突均为须扣下 `HELD`）与完整测次链（迟到记录带 `late` 标记追加在链尾），并按片给出前后计数、交接差额前后值、可放行与须扣下清单及批次汇总。预览接口生成同一份文档但不落库。
+
 ## 原因码
 
 | 阶段 | 状态或原因码 |
@@ -44,6 +52,7 @@
 | 对表 | `UNKNOWN_WAFER` 未登记片号、`BAD_COORDINATE` 非法坐标 |
 | 掩模 | `OUT_OF_GRID` 阵列外、`OUTSIDE_DISC` 圆片外、`EDGE_EXCLUSION` 边缘带、`NOTCH_VOID` 缺口空位 |
 | 裁决 | `BAD_ATTEMPT` 测次无效、`NO_RESULT` 空测、`BAD_RESULT` 判定无效、`BAD_BIN` 分档不符、`SAME_ATTEMPT_CONFLICT` 同次矛盾、`DUPLICATE_RESULT` 同次同值 |
+| 更正 | `CORRECTION_UNKNOWN_WAFER` 晶圆不在本批、`CORRECTION_CELL_NOT_ACTIVE` 非有效芯粒、`CORRECTION_BAD_BIN` 分档与判定不符、`CORRECTION_STALE_ATTEMPT` 测次不新于现有、`CORRECTION_ATTEMPT_CONFLICT` 同测次已存在、`CORRECTION_NOT_FOUND` 更正版本未找到 |
 
 ## 已知范围
 

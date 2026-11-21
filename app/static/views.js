@@ -7,6 +7,7 @@ export const labels = {
   EDGE_EXCLUSION: '边缘保留带', NOTCH_VOID: '缺口空位', OUTSIDE_DISC: '圆片外',
   OUT_OF_GRID: '超出阵列', MATCH: '一致', REVIEW: '台账有差异', DIFFERENCE: '有差异',
   MISSING_REFERENCE: '缺交接台账', UNBALANCED: '阵列或行数失衡',
+  RELEASABLE: '可放行', HELD: '须扣下', PUBLISHED: '已发布', PREVIEW: '预览未发布',
 };
 
 export function element(tag, value, className) {
@@ -33,7 +34,8 @@ export function pairs(items) {
 
 export function status(code) {
   const variant = {PASS:'pass', FAIL:'fail', CONFLICT:'conflict', PENDING:'pending', MATCH:'pass',
-    REVIEW:'pending', DIFFERENCE:'pending', UNBALANCED:'fail'}[code] ?? '';
+    REVIEW:'pending', DIFFERENCE:'pending', UNBALANCED:'fail',
+    RELEASABLE:'pass', HELD:'fail', PUBLISHED:'pass', PREVIEW:'pending'}[code] ?? '';
   return element('span', labels[code] ?? code, `status ${variant}`);
 }
 
@@ -41,7 +43,7 @@ export function failure(box, error) {
   box.replaceChildren(element('p', error.message || '请求失败，请重试。', 'inline-error'));
 }
 
-function table(box, records, columns, empty = '没有符合条件的记录。') {
+export function table(box, records, columns, empty = '没有符合条件的记录。') {
   if (records.length === 0) {
     box.replaceChildren(element('p', empty, 'empty'));
     return;
@@ -245,7 +247,7 @@ async function clusters(context) {
   else for (const box of [target, evidence]) box.replaceChildren(element('p', '此片无最终失败芯粒。', 'empty'));
 }
 
-const countNames = {valid: '有效', passed: '通过', failed: '失败', pending: '待测', conflict: '冲突'};
+export const countNames = {valid: '有效', passed: '通过', failed: '失败', pending: '待测', conflict: '冲突'};
 const rowNames = {total: '实收记录', declared_data: '声明数据', accepted: '采信', isolated: '隔离', duplicate: '重复', blank: '空记录', header: '重复档头'};
 
 function auditView({audit, signal}) {
